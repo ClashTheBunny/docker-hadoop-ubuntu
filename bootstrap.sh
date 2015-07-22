@@ -61,7 +61,7 @@ while true; do
                     bash -x $HADOOP_PREFIX/sbin/yarn-daemon.sh          --config $HADOOP_CONF_DIR start nodemanager
                 ;;
                 -d)
-                  while true; do sleep 1000; done
+                  tail -f /usr/local/hadoop/logs/*log
                   break
                 ;;
                 -bash)
