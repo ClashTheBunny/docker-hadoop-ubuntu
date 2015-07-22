@@ -37,11 +37,12 @@ RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/had
 #RUN . $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
 # pseudo distributed
-ADD core-site.xml.template $HADOOP_PREFIX/etc/hadoop/core-site.xml.template
-ADD yarn-site.xml.template $HADOOP_PREFIX/etc/hadoop/yarn-site.xml.template
-ADD hdfs-site.xml.template $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml.template
-
+ADD core-site.xml  $HADOOP_PREFIX/etc/hadoop/core-site.xml
+ADD yarn-site.xml  $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+ADD hdfs-site.xml  $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
 ADD mapred-site.xml $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
+
+RUN sed -i 's/NUMBEROFNODES/2/g' $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
 
 RUN $HADOOP_PREFIX/bin/hdfs namenode -format
 
