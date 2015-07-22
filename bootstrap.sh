@@ -2,7 +2,7 @@
 
 : ${HADOOP_PREFIX:=/usr/local/hadoop}
 
-source $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
+bash -x $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
 rm /tmp/*.pid
 
@@ -32,23 +32,33 @@ while true; do
                 ssh)
                   service ssh start
                 ;;
-                rm)
-                    $HADOOP_PREFIX/sbin/yarn-daemon.sh          --config $HADOOP_CONF_DIR start resourcemanager
+#On main machine
+                cluster)
+                #start local daemons, then start other docker containers
+                    /etc/bootstrap.sh rm hs nn dn nm; shift
+                    for computeNode in $(seq $1)
+                    do
+                      : # start docker slaves
+                    done
                 ;;
-                nm)
-                    $HADOOP_PREFIX/sbin/yarn-daemon.sh          --config $HADOOP_CONF_DIR start nodemanager
+                rm)
+                    bash -x $HADOOP_PREFIX/sbin/yarn-daemon.sh          --config $HADOOP_CONF_DIR start resourcemanager
                 ;;
                 hs)
-                    $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver
+                    bash -x $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver
                 ;;
                 nn)
-                    $HADOOP_PREFIX/sbin/hadoop-daemon.sh        --config $HADOOP_CONF_DIR start namenode
+                    bash -x $HADOOP_PREFIX/sbin/hadoop-daemon.sh        --config $HADOOP_CONF_DIR start namenode
                 ;;
+#Not on main machine
                 snn)
-                    $HADOOP_PREFIX/sbin/hadoop-daemon.sh        --config $HADOOP_CONF_DIR start secondarynamenode
+                    bash -x $HADOOP_PREFIX/sbin/hadoop-daemon.sh        --config $HADOOP_CONF_DIR start secondarynamenode
                 ;;
                 dn)
-                    $HADOOP_PREFIX/sbin/hadoop-daemon.sh        --config $HADOOP_CONF_DIR start datanode
+                    bash -x $HADOOP_PREFIX/sbin/hadoop-daemon.sh        --config $HADOOP_CONF_DIR start datanode
+                ;;
+                nm)
+                    bash -x $HADOOP_PREFIX/sbin/yarn-daemon.sh          --config $HADOOP_CONF_DIR start nodemanager
                 ;;
                 -d)
                   while true; do sleep 1000; done
