@@ -2,7 +2,7 @@
 
 : ${HADOOP_PREFIX:=/usr/local/hadoop}
 
-bash -x $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
+source $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
 rm /tmp/*.pid
 
